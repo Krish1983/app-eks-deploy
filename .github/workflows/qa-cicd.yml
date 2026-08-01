@@ -107,7 +107,7 @@ jobs:
           path: checkov-dockerfile-report.json
           if-no-files-found: warn
 
-          client-trivy-fs:
+  client-trivy-fs:
     name: Client Trivy FS Scan
     runs-on: ubuntu-latest
     needs: gitleaks-scan
@@ -326,4 +326,3 @@ jobs:
       - name: Run server tests
         run: npm test --if-present
         continue-on-error: true
-
