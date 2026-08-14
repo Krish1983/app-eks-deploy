@@ -1,4 +1,3 @@
-# Trigger Test-1
 name: Enterprise DevSecOps CICD Pipeline
 on:
   push:
@@ -38,8 +37,8 @@ jobs:
           path: gitleaks-report.json
           if-no-files-found: warn
 
-      checkov-terraform:
-      name: Checkov Terraform Scan
+  checkov-terraform:
+    name: Checkov Terraform Scan
     runs-on: ubuntu-latest
     needs: gitleaks-scan
     steps:
@@ -112,5 +111,3 @@ jobs:
           name: checkov-dockerfile-report
           path: checkov-dockerfile-report.json
           if-no-files-found: warn
-
-  
