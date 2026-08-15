@@ -418,8 +418,8 @@ jobs:
           load: true
           push: false
           tags: |
-            krishnakumar1983/app-eks-deploy:${{ github.sha }}
-            krishnakumar1983/app-eks-deploy:latest
+            devopsshack/nodejs-app:${{ github.sha }}
+            devopsshack/nodejs-app:latest
 
       - name: Install Trivy
         uses: aquasecurity/setup-trivy@v0.2.6
@@ -486,3 +486,29 @@ jobs:
           tags: |
             krishnakumar1983/app-eks-deploy:${{ github.sha }}
             krishnakumar1983/app-eks-deploy:latest
+
+
+  update-qa-manifest:
+    name: Update QA Manifest
+    needs: docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout qa branch
+        uses: actions/checkout@v4
+        with:
+          ref: qa
+      - name: Update image tag in manifest
+        run: |
+          sed -i "s|image: krishnakumar1983/app-eks-deploy:.*|image: krishnakumar1983/app-eks-deploy:${GITHUB_SHA}|g" k8-manifests/qa/app-deployment.yaml
+      - name: Show updated manifest (debug)
+        run: |
+          cat k8-manifests/qa/app-deployment.yaml
+      - name: Commit and push changes
+        run: |
+          git config user.name "krish1983"
+          git config user.email "kriskumar.k@gmail.com"
+          git add k8-manifests/qa/app-deployment.yaml
+          git commit -m "Update QA image to ${GITHUB_SHA} [skip ci]" || echo "No changes to commit"
+          git push origin qa
